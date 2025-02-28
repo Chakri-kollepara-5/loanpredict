@@ -369,3 +369,35 @@ import joblib
 joblib.dump(model, "loan_prediction_model.pkl")
 
 model = joblib.load("loan_prediction_model.pkl")
+
+pip install streamlit
+
+import streamlit as st
+import joblib
+import pandas as pd
+
+# Load the trained model
+model = joblib.load("loan_prediction_model.pkl")
+
+# Streamlit UI
+st.title("Loan Prediction App")
+st.write("Enter the details below to predict loan approval:")
+
+# User input fields
+gender = st.selectbox("Gender", ["Male", "Female"])
+married = st.selectbox("Married", ["Yes", "No"])
+applicant_income = st.number_input("Applicant Income", min_value=0)
+loan_amount = st.number_input("Loan Amount", min_value=0)
+credit_history = st.selectbox("Credit History", [1, 0])
+
+# Convert input into DataFrame
+input_data = pd.DataFrame([[gender, married, applicant_income, loan_amount, credit_history]],
+                          columns=['Gender', 'Married', 'ApplicantIncome', 'LoanAmount', 'CreditHistory'])
+
+# Predict
+if st.button("Predict"):
+    prediction = model.predict(input_data)
+    st.success("Loan Approved" if prediction[0] == 1 else "Loan Rejected")
+
+!streamlit run app.py
+
